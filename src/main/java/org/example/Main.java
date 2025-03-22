@@ -8,11 +8,9 @@ import org.example.shop.Cart;
 import org.example.shop.Product;
 import org.example.validator.impl.XmlSchemaValidator;
 
-import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
