@@ -2,21 +2,29 @@ package org.example;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.example.People.Person;
+import org.example.company.Company;
+import org.example.company.Department;
+import org.example.company.Worker;
 import org.example.dumper.impl.JsonDumper;
 import org.example.dumper.impl.XmlDumper;
+import org.example.http.HTTPServer;
 import org.example.shop.Cart;
 import org.example.shop.Product;
 import org.example.validator.impl.XmlSchemaValidator;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, InvocationTargetException, IllegalAccessException {
         taskOne();
         taskTwo();
+        taskThreePrep();
+        new HTTPServer().start();
     }
 
     public static void taskOne() {
@@ -52,5 +60,24 @@ public class Main {
         XmlDumper<List<Person>> xmlDumper = new XmlDumper<>();
         List<Person> newPeople = xmlDumper.load(xmlPath, new TypeReference<List<Person>>() {}, new XmlSchemaValidator(xsdPath));
         System.out.println(newPeople);
+    }
+
+    public static void taskThreePrep() {
+        System.out.println("TaskThree");
+        Path xmlPath = Path.of(".", "company.xml");
+        Path jsonPath = Path.of(".", "company.json");
+
+        Company company = new Company();
+        company.setName("WSB");
+        company.addDepartment(new Department().setName("IT")
+                        .addWorker(new Worker().setName("Maks").setSurname("Grupinski").setPosition("Jester"))
+                        .addWorker(new Worker().setName("Artur").setSurname("Kucinski").setPosition("Jokey")))
+                .addDepartment(new Department().setName("Cleanup")
+                        .addWorker(new Worker().setName("Sebuś").setSurname("Niepamietam").setPosition("Mainman")));
+
+        JsonDumper<Company> jsonDumper = new JsonDumper<>();
+        XmlDumper<Company> xmlDumper = new XmlDumper<>();
+        xmlDumper.dump(xmlPath, company);
+        jsonDumper.dump(jsonPath, company);
     }
 }

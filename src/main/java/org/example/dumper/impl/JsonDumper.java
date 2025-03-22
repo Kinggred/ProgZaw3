@@ -26,6 +26,16 @@ public class JsonDumper<T> implements DataDumper<T> {
     }
 
     @Override
+    public String dump(T objToDump) {
+        Optional<String> mappedObj;
+        try {
+            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(objToDump);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to convert object to JSON", e);
+        }
+    }
+
+    @Override
     public T load(Path path, Class<T> clazz) {
         try {
             String jsonContent = File.read(path);

@@ -29,6 +29,15 @@ public class XmlDumper<T> implements DataDumper<T> {
     }
 
     @Override
+    public String dump(T objToDump) {
+        try {
+            return xmlMapper.writerWithDefaultPrettyPrinter().writeValueAsString(objToDump);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to write XML");
+        }
+    }
+
+    @Override
     public T load(Path path, Class<T> clazz) {
         try {
             String xmlContent = File.read(path);
