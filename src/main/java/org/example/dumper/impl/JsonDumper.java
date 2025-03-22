@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.example.dumper.File;
 import org.example.dumper.DataDumper;
+import org.example.validator.SchemaValidator;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -35,7 +36,7 @@ public class JsonDumper<T> implements DataDumper<T> {
     }
 
     @Override
-    public T load(Path path, Class<T> clazz, String validator) {
+    public T load(Path path, Class<T> clazz, SchemaValidator validator) {
         System.out.println("No validation for JSON");
         return this.load(path, clazz);
     }
