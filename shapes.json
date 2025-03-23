@@ -1,0 +1,23 @@
+[ {
+  "width" : 12.0,
+  "height" : 23.0,
+  "name" : "Rectangle",
+  "field" : 276.0,
+  "circumference" : 58.0
+}, {
+  "width" : 2.0,
+  "height" : 24.0,
+  "name" : "Rectangle",
+  "field" : 48.0,
+  "circumference" : 50.0
+}, {
+  "name" : "Circle",
+  "radius" : 2.0,
+  "field" : 12.56,
+  "circumference" : 12.56
+}, {
+  "name" : "Circle",
+  "radius" : 14.0,
+  "field" : 615.44,
+  "circumference" : 87.92
+} ]

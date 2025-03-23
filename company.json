@@ -1,0 +1,35 @@
+{
+  "name" : "WSB",
+  "departments" : [ {
+    "name" : "IT",
+    "workerList" : [ {
+      "name" : "Maks",
+      "surname" : "Grupinski",
+      "position" : "Jester"
+    }, {
+      "name" : "Artur",
+      "surname" : "Kucinski",
+      "position" : "Jokey"
+    } ]
+  }, {
+    "name" : "Cleanup",
+    "workerList" : [ {
+      "name" : "Sebuś",
+      "surname" : "Niepamietam",
+      "position" : "Mainman"
+    } ]
+  } ],
+  "workers" : [ {
+    "name" : "Maks",
+    "surname" : "Grupinski",
+    "position" : "Jester"
+  }, {
+    "name" : "Artur",
+    "surname" : "Kucinski",
+    "position" : "Jokey"
+  }, {
+    "name" : "Sebuś",
+    "surname" : "Niepamietam",
+    "position" : "Mainman"
+  } ]
+}

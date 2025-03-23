@@ -8,6 +8,9 @@ import org.example.company.Worker;
 import org.example.dumper.impl.JsonDumper;
 import org.example.dumper.impl.XmlDumper;
 import org.example.http.HTTPServer;
+import org.example.shapes.Circle;
+import org.example.shapes.Rectangle;
+import org.example.shapes.Shape;
 import org.example.shop.Cart;
 import org.example.shop.Product;
 import org.example.validator.impl.XmlSchemaValidator;
@@ -17,6 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
@@ -24,6 +28,7 @@ public class Main {
         taskOne();
         taskTwo();
         taskThreePrep();
+        taskFour();
         new HTTPServer().start();
     }
 
@@ -79,5 +84,24 @@ public class Main {
         XmlDumper<Company> xmlDumper = new XmlDumper<>();
         xmlDumper.dump(xmlPath, company);
         jsonDumper.dump(jsonPath, company);
+    }
+
+    public static void taskFour() {
+        System.out.println("TaskFour");
+        List<Shape> shapes = new ArrayList<>();
+
+        Path xmlPath = Path.of(".", "shapes.xml");
+        Path jsonPath = Path.of(".", "shapes.json");
+
+        JsonDumper<List<Shape>> jsonDumper = new JsonDumper<>();
+        XmlDumper<List<Shape>> xmlDumper = new XmlDumper<>();
+
+        shapes.add(new Rectangle(12, 23));
+        shapes.add(new Rectangle(2, 24));
+        shapes.add(new Circle(2));
+        shapes.add(new Circle(14));
+
+        jsonDumper.dump(jsonPath, shapes);
+        xmlDumper.dump(xmlPath, shapes);
     }
 }

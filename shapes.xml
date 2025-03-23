@@ -1,0 +1,28 @@
+<ArrayList>
+  <item>
+    <width>12.0</width>
+    <height>23.0</height>
+    <name>Rectangle</name>
+    <field>276.0</field>
+    <circumference>58.0</circumference>
+  </item>
+  <item>
+    <width>2.0</width>
+    <height>24.0</height>
+    <name>Rectangle</name>
+    <field>48.0</field>
+    <circumference>50.0</circumference>
+  </item>
+  <item>
+    <name>Circle</name>
+    <radius>2.0</radius>
+    <field>12.56</field>
+    <circumference>12.56</circumference>
+  </item>
+  <item>
+    <name>Circle</name>
+    <radius>14.0</radius>
+    <field>615.44</field>
+    <circumference>87.92</circumference>
+  </item>
+</ArrayList>

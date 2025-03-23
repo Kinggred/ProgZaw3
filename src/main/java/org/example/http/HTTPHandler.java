@@ -1,16 +1,20 @@
 package org.example.http;
 
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.example.company.Company;
 import org.example.dumper.impl.JsonDumper;
 import org.example.dumper.impl.XmlDumper;
+import org.example.shapes.Shape;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class HTTPHandler {
@@ -59,27 +63,43 @@ public class HTTPHandler {
         }
         return "HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n";
     }
-//    public static String handleHttpRequest(String request) {
-//            if (url.startsWith("/shapes")) {
-//                Map<String, String> params = parseQueryParams(url);
-//                String shapeFilter = params.get("type");
-//                StringBuilder responseBody = new StringBuilder("<html><head>\r\n" + "  <meta charset=\"UTF-8\">\r\n"
-//                        + "  <title>Shapes</title>\r\n" + "</head><body>");
-//
-//                for (Shape shape : shapes) {
-//                    if (shapeFilter == null || shape.getClass().getSimpleName().toLowerCase().contains(shapeFilter.toLowerCase())) {
-//                        responseBody.append("<p>").append(shape.toString()).append("</p>");
-//                    }
-//                }
-//
-//                responseBody.append("</body></html>");
-//                return "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: " + responseBody.length()
-//                        + "\r\n\r\n" + responseBody;
-//            }
-//        }
-//        return "HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n";
-//    }
-//
+
+    @Request(method = "GET", path = "/shapes")
+    public static String getShapes(Map<String, String> params) {
+        String format = params.getOrDefault("format", "json");
+        String shapeFilter = params.getOrDefault("filter", null);
+
+        XmlDumper<List<Shape>> xmlDumper = new XmlDumper<>();
+        List<Shape> shapes = xmlDumper.load(Path.of(".", "shapes.xml"), new TypeReference<List<Shape>>() {});
+        StringBuilder responseBody = new StringBuilder("<html><head>\r\n" + "  <meta charset=\"UTF-8\">\r\n"
+                + "  <title>Shapes</title>\r\n" + "</head><body>");
+
+        List<Shape> filteredShapes = new ArrayList<>();
+        for (Shape shape : shapes) {
+                    if (shapeFilter == null || shape.getClass().getSimpleName().toLowerCase().contains(shapeFilter.toLowerCase())) {
+                        filteredShapes.add(shape);
+                    }
+                }
+
+        if (shapeFilter != null) {
+            shapes = filteredShapes;
+        }
+
+        switch (format) {
+            case "json":
+                JsonDumper<List<Shape>> jsonDumper = new JsonDumper<>();
+                responseBody.append(jsonDumper.dump(shapes));
+                responseBody.append("</body></html>");
+                return "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: " + responseBody.length() + "\r\n\r\n" + responseBody;
+
+            case "xml":
+                responseBody.append(xmlDumper.dump(shapes));
+                responseBody.append("</body></html>");
+                return "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: " + responseBody.length() + "\r\n\r\n" + responseBody;
+        }
+        return "HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n";
+    }
+
     private static Map<String, String> parseQueryParams(String url) {
         Map<String, String> params = new HashMap<>();
         String query = url.contains("?") ? url.substring(url.indexOf("?") + 1) : "";
