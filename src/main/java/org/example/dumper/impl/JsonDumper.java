@@ -1,5 +1,7 @@
 package org.example.dumper.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.example.dumper.File;
@@ -35,6 +37,15 @@ public class JsonDumper<T> implements DataDumper<T> {
         }
     }
 
+    public T load(String objToLoad, Class<T> clazz) {
+        try {
+            return objectMapper.readValue(objToLoad, clazz);
+        } catch (JsonProcessingException e) {
+            System.out.println("Failed to parse as JSON " + objToLoad);
+            throw new RuntimeException("Failed to parse as JSON " + objToLoad, e);
+        }
+    }
+
     @Override
     public T load(Path path, Class<T> clazz) {
         try {
@@ -49,5 +60,14 @@ public class JsonDumper<T> implements DataDumper<T> {
     public T load(Path path, Class<T> clazz, SchemaValidator validator) {
         System.out.println("No validation for JSON");
         return this.load(path, clazz);
+    }
+
+    public T load(Path path, TypeReference<T> typeReference) {
+        try {
+            String jsonContent = File.read(path);
+            return objectMapper.readValue(jsonContent, typeReference);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load XML from file: " + path, e);
+        }
     }
 }

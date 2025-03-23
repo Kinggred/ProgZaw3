@@ -12,10 +12,7 @@ import java.lang.reflect.Method;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class HTTPHandler {
     static Map<String, Map<String, Method>> endpoints = new HashMap<>();
@@ -34,7 +31,7 @@ public class HTTPHandler {
                     Map<String, Method> allowedMethods = endpoints.get(path);
                     if (allowedMethods.containsKey(requested_method)) {
                         Map<String, String> params = parseQueryParams(url);
-                        return (String) allowedMethods.get(requested_method).invoke(null, params);
+                        return (String) allowedMethods.get(requested_method).invoke(null, lines[lines.length-1], params);
                     }
                 }
             }
@@ -43,7 +40,7 @@ public class HTTPHandler {
     }
 
     @Request(method = "GET", path = "/workers")
-    public static String getWorkers(Map<String, String> params) {
+    public static String getWorkers(String body, Map<String, String> params) {
         String format = params.getOrDefault("format", "json");
 
         StringBuilder responseBody = new StringBuilder("<html><head>\r\n" + "  <meta charset=\"UTF-8\">\r\n"
@@ -64,8 +61,33 @@ public class HTTPHandler {
         return "HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n";
     }
 
+    @Request(method = "POST", path = "/print")
+    public static String printRequest(String body, Map<String, String> params) {
+        StringBuilder responseBody = new StringBuilder("<html><head>\r\n" + "  <meta charset=\"UTF-8\">\r\n"
+                + "  <title>Requested resources</title>\r\n" + "</head> \r\n" + body + "<body>");
+
+        return "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: " + responseBody.length() + "\r\n\r\n" + responseBody;
+    }
+
+    @Request(method = "POST", path = "/shapes")
+    public static String addShape(String body, Map<String, String> params) {
+        JsonDumper<Shape> jsonDumper = new JsonDumper<>();
+        Shape shape = jsonDumper.load(body, Shape.class);
+
+        JsonDumper<List<Shape>> listDumper = new JsonDumper<>();
+        Path jsonPath = Path.of(".", "shapes.json");
+        List<Shape> shapes = listDumper.load(jsonPath, new TypeReference<List<Shape>>() {});
+        shapes.add(shape);
+        listDumper.dump(jsonPath,shapes);
+
+        StringBuilder responseBody = new StringBuilder("<html><head>\r\n" + "  <meta charset=\"UTF-8\">\r\n"
+                + "  <title>Requested resources</title>\r\n" + "</head> \r\n" + listDumper.dump(shapes) + "<body>");
+
+        return "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: " + responseBody.length() + "\r\n\r\n" + responseBody;
+    }
+
     @Request(method = "GET", path = "/shapes")
-    public static String getShapes(Map<String, String> params) {
+    public static String getShapes(String body, Map<String, String> params) {
         String format = params.getOrDefault("format", "json");
         String shapeFilter = params.getOrDefault("filter", null);
 

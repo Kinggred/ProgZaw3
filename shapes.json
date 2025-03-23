@@ -20,4 +20,10 @@
   "radius" : 14.0,
   "field" : 615.44,
   "circumference" : 87.92
+}, {
+  "width" : 12.0,
+  "height" : 34.0,
+  "name" : "Rectangle",
+  "field" : 408.0,
+  "circumference" : 80.0
 } ]
